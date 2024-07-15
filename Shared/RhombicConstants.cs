@@ -6,7 +6,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-07-11 22:36:30 
+  Last commit at: 2024-07-14 23:47:10 
 ------------------------------------------------------------------------------*/
 using UnityEngine;
 
@@ -44,8 +44,12 @@ namespace AlchemicalFlux.GridSystems
         };
 
         // Define the rotation quaternion
-        public static readonly Quaternion HexRotation = Quaternion.Euler(35, 0, 45);
-        public static readonly Quaternion ReversedHexRotation = Quaternion.Euler(0, 0, -180) * HexRotation;
+        private static readonly float LARGE_ANGLE = 2 * Mathf.Atan(Mathf.Sqrt(2));
+        private static readonly float LARGE_DEGREES = LARGE_ANGLE * Mathf.Rad2Deg;
+        private static readonly float HEX_ROTATION = LARGE_DEGREES / 2f;
+
+        public static readonly Quaternion HexRotation = Quaternion.AngleAxis(HEX_ROTATION, new Vector3(1, 0, 1));
+        public static readonly Quaternion TopAlign = Quaternion.AngleAxis(45, new Vector3(0, 1, 0)) * HexRotation;
 
         // Traversals
         public static readonly Vector3 X = new(2, 0, 2);
