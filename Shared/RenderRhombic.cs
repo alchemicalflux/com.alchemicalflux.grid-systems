@@ -6,7 +6,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-07-14 23:47:10 
+  Last commit at: 2024-08-03 03:57:37 
 ------------------------------------------------------------------------------*/
 using UnityEngine;
 namespace AlchemicalFlux.GridSystems
@@ -24,7 +24,7 @@ namespace AlchemicalFlux.GridSystems
 
         private void OnDrawGizmos()
         {
-            switch (RotationState)
+            switch(RotationState)
             {
                 case RotationStateValue.Square:
                     DrawLocalPointSet(RhombicConstants.Verts, Color.green);
@@ -34,7 +34,8 @@ namespace AlchemicalFlux.GridSystems
                     DrawLocalLine(new(), RhombicConstants.Z, Color.blue);
                     break;
                 case RotationStateValue.Hex:
-                    _rhombicConverter.AlignUsing(transform.localRotation);
+                    _rhombicConverter.AlignUsing(transform.localRotation * RhombicConstants.SideAlign);
+                    //DrawChunk(_rhombicConverter.X, _rhombicConverter.Y, _rhombicConverter.Z);
                     DrawPointSet(_rhombicConverter.Verts, Color.green);
                     DrawPointSet(_rhombicConverter.FaceCenters, Color.red);
                     DrawLine(new(), _rhombicConverter.X, Color.red);
@@ -42,7 +43,6 @@ namespace AlchemicalFlux.GridSystems
                     DrawLine(new(), _rhombicConverter.Z, Color.blue);
                     break;
             }
-
 
             //var percent = 13;
             //foreach(var neighbor in RhombicGrid.Neighbors)
@@ -79,6 +79,24 @@ namespace AlchemicalFlux.GridSystems
         {
             Gizmos.color = color;
             Gizmos.DrawLine(transform.TransformPoint(start), transform.TransformPoint(end));
+        }
+
+        private void DrawChunk(Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
+        {
+            var limit = 3;
+            for(var x = -2; x < limit; ++x)
+            {
+                for(var y = -2; y < limit; ++y)
+                {
+                    for(var z = -2; z < limit; ++z)
+                    {
+                        var result = x * xAxis + y * yAxis + z * zAxis;
+                        result *= 2;
+                        Gizmos.color = new(x / (float)limit, y / (float)limit, z / (float)limit);
+                        Gizmos.DrawSphere(transform.TransformPoint(result), .25f);
+                    }
+                }
+            }
         }
     }
 }
