@@ -6,55 +6,38 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-03 03:57:37 
+  Last commit at: 2024-08-03 09:16:05 
 ------------------------------------------------------------------------------*/
 using UnityEngine;
 namespace AlchemicalFlux.GridSystems
 {
     public class RenderRhombic : MonoBehaviour
     {
-        public enum RotationStateValue { Square, Hex };
+        public enum RotationStateValue { Base, HexTop, HexSide };
         public RotationStateValue RotationState;
 
-        private RhombicGridConverter _rhombicConverter = new();
-
-        private void Start()
-        {
-        }
+        private RhombicGridConverter _baseAlignment = new(RhombicGridConfig.BaseAlignment);
+        private RhombicGridConverter _hexTopAlignment = new(RhombicGridConfig.TopAlignment);
+        private RhombicGridConverter _hexSideAlignment = new(RhombicGridConfig.SideAlignment);
 
         private void OnDrawGizmos()
         {
             switch(RotationState)
             {
-                case RotationStateValue.Square:
-                    DrawLocalPointSet(RhombicConstants.Verts, Color.green);
-                    DrawLocalPointSet(RhombicConstants.FaceCenters, Color.red);
-                    DrawLocalLine(new(), RhombicConstants.X, Color.red);
-                    DrawLocalLine(new(), RhombicConstants.Y, Color.green);
-                    DrawLocalLine(new(), RhombicConstants.Z, Color.blue);
-                    break;
-                case RotationStateValue.Hex:
-                    _rhombicConverter.AlignUsing(transform.localRotation * RhombicConstants.SideAlign);
-                    //DrawChunk(_rhombicConverter.X, _rhombicConverter.Y, _rhombicConverter.Z);
-                    DrawPointSet(_rhombicConverter.Verts, Color.green);
-                    DrawPointSet(_rhombicConverter.FaceCenters, Color.red);
-                    DrawLine(new(), _rhombicConverter.X, Color.red);
-                    DrawLine(new(), _rhombicConverter.Y, Color.green);
-                    DrawLine(new(), _rhombicConverter.Z, Color.blue);
-                    break;
+                case RotationStateValue.Base: DrawSet(_baseAlignment); break;
+                case RotationStateValue.HexTop: DrawSet(_hexTopAlignment); break;
+                case RotationStateValue.HexSide: DrawSet(_hexSideAlignment); break;
             }
+        }
 
-            //var percent = 13;
-            //foreach(var neighbor in RhombicGrid.Neighbors)
-            //{
-            //    Gizmos.DrawSphere(neighbor, Mathf.Sqrt(2));
-            //    //var color = (--percent / 12f);
-            //    //Gizmos.color = new(color, color, color);
-            //    //foreach (var vert in RhombicGrid.Verts)
-            //    //{
-            //    //    Gizmos.DrawSphere(vert + neighbor, .05f);
-            //    //}
-            //}
+        private void DrawSet(RhombicGridConverter converter)
+        {
+            //DrawChunk(converter.X, converter.Y, converter.Z);
+            DrawLocalPointSet(converter.Verts, Color.green);
+            DrawLocalPointSet(converter.FaceCenters, Color.red);
+            DrawLocalLine(new(), converter.X, Color.red);
+            DrawLocalLine(new(), converter.Y, Color.green);
+            DrawLocalLine(new(), converter.Z, Color.blue);
         }
 
         private void DrawPointSet(Vector3[] points, Color color)
@@ -83,12 +66,12 @@ namespace AlchemicalFlux.GridSystems
 
         private void DrawChunk(Vector3 xAxis, Vector3 yAxis, Vector3 zAxis)
         {
-            var limit = 3;
-            for(var x = -2; x < limit; ++x)
+            var limit = 2;
+            for(var x = -limit; x <= limit; ++x)
             {
-                for(var y = -2; y < limit; ++y)
+                for(var y = -limit; y <= limit; ++y)
                 {
-                    for(var z = -2; z < limit; ++z)
+                    for(var z = -limit; z <= limit; ++z)
                     {
                         var result = x * xAxis + y * yAxis + z * zAxis;
                         result *= 2;

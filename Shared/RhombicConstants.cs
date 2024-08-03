@@ -6,7 +6,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-03 03:57:37 
+  Last commit at: 2024-08-03 09:16:05 
 ------------------------------------------------------------------------------*/
 using UnityEngine;
 
@@ -35,13 +35,10 @@ namespace AlchemicalFlux.GridSystems
             new(0, 1, 1), new(0, 1, -1), new(0, -1, 1), new(0, -1, -1)
         };
 
-        public static readonly Vector3[] Neighbors =
-        {
-            new(2, 2, 0), new(2, 0, 2), new(0, 2, 2),
-            new(2, -2, 0), new(2, 0, -2), new(0, 2, -2),
-            new(-2, 2, 0), new(-2, 0, 2), new(0, -2, 2),
-            new(-2, -2, 0), new(-2, 0, -2), new(0, -2, -2),
-        };
+        // Traversals
+        public static readonly Vector3 X = new(2, 0, 2);
+        public static readonly Vector3 Y = new(0, 2, 2);
+        public static readonly Vector3 Z = new(-2, 0, 2);
 
         // Define the rotation quaternion
         private static readonly float LargeAngle = 2 * Mathf.Atan(Mathf.Sqrt(2));
@@ -49,12 +46,7 @@ namespace AlchemicalFlux.GridSystems
         private static readonly float HexAngle = LargeDegrees / 2f;
 
         public static readonly Quaternion HexRotation = Quaternion.AngleAxis(HexAngle, new Vector3(1, 0, 1));
-        public static readonly Quaternion TopAlign = Quaternion.AngleAxis(-45, new Vector3(0, 1, 0)) * HexRotation;
+        public static readonly Quaternion TopAlign = Quaternion.AngleAxis(15, new Vector3(0, 1, 0)) * HexRotation;
         public static readonly Quaternion SideAlign = Quaternion.AngleAxis(45, new Vector3(0, 1, 0)) * HexRotation;
-
-        // Traversals
-        public static readonly Vector3 X = new(2, 0, 2);
-        public static readonly Vector3 Y = new(0, 2, 2);
-        public static readonly Vector3 Z = new(-2, 0, 2);
     }
 }
