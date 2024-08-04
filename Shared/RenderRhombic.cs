@@ -6,8 +6,9 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-04 06:53:33 
+  Last commit at: 2024-08-04 07:58:46 
 ------------------------------------------------------------------------------*/
+using System.Collections.Generic;
 using UnityEngine;
 namespace AlchemicalFlux.GridSystems
 {
@@ -43,13 +44,13 @@ namespace AlchemicalFlux.GridSystems
             DrawLocalLine(new(), converter.Z, Color.blue);
         }
 
-        private void DrawPointSet(Vector3[] points, Color color)
+        private void DrawPointSet(IReadOnlyList<Vector3> points, Color color)
         {
             Gizmos.color = color;
             foreach(var point in points) { Gizmos.DrawSphere(transform.position + point, .1f); }
         }
 
-        private void DrawLocalPointSet(Vector3[] points, Color color)
+        private void DrawLocalPointSet(IReadOnlyList<Vector3> points, Color color)
         {
             Gizmos.color = color;
             foreach (var point in points) { Gizmos.DrawSphere(transform.TransformPoint(point), .1f); }

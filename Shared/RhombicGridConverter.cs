@@ -6,9 +6,9 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-04 06:53:33 
+  Last commit at: 2024-08-04 07:58:46 
 ------------------------------------------------------------------------------*/
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AlchemicalFlux.GridSystems
@@ -17,7 +17,7 @@ namespace AlchemicalFlux.GridSystems
     {
         #region Members
 
-        public Vector3[] Verts, FaceCenters;
+        public IReadOnlyList<Vector3> Verts, FaceCenters;
         public readonly Vector3 X, Y, Z;
 
         #endregion Members
@@ -34,17 +34,12 @@ namespace AlchemicalFlux.GridSystems
 
         public RhombicGridConverter(RhombicGridConfig config, Vector3 scale)
         {
-            Verts = RhombicConstants.Verts.ToArray();
-            FaceCenters = RhombicConstants.FaceCenters.ToArray();
-            Transform(Verts, config.Rotation, scale);
-            Transform(FaceCenters, config.Rotation, scale);
+            Verts = Transform(RhombicConstants.Verts, config.Rotation, scale);
+            FaceCenters = Transform(RhombicConstants.FaceCenters, config.Rotation, scale);
 
-            X = 2f * RhombicConstants.FaceCenters[config.XVectorIndex];
-            Y = 2f * RhombicConstants.FaceCenters[config.YVectorIndex];
-            Z = 2f * RhombicConstants.FaceCenters[config.ZVectorIndex];
-            Transform(ref X, config.Rotation, scale);
-            Transform(ref Y, config.Rotation, scale);
-            Transform(ref Z, config.Rotation, scale);
+            X = Transform(2f * RhombicConstants.FaceCenters[config.XVectorIndex], config.Rotation, scale);
+            Y = Transform(2f * RhombicConstants.FaceCenters[config.YVectorIndex], config.Rotation, scale);
+            Z = Transform(2f * RhombicConstants.FaceCenters[config.ZVectorIndex], config.Rotation, scale);
         }
 
         #endregion Constructors
@@ -55,18 +50,21 @@ namespace AlchemicalFlux.GridSystems
 
         #region Helpers
 
-        private void Transform(Vector3[] array, Quaternion rotation, Vector3 scale)
+        private IReadOnlyList<Vector3> Transform(IReadOnlyList<Vector3> array, Quaternion rotation, Vector3 scale)
         {
-            for(var index = 0; index < array.Length; ++index)
+            List<Vector3> result = new();
+            for(var index = 0; index < array.Count; ++index)
             {
-                Transform(ref array[index], rotation, scale);
+                result.Add(Transform(array[index], rotation, scale));
             }
+            return result;
         }
 
-        private void Transform(ref Vector3 vector, Quaternion rotation, Vector3 scale)
+        private Vector3 Transform(Vector3 vector, Quaternion rotation, Vector3 scale)
         {
             vector = Vector3.Scale(scale, vector);
             vector = rotation * vector;
+            return vector;
         }
 
         #endregion Helpers
