@@ -6,7 +6,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-03 09:16:05 
+  Last commit at: 2024-08-04 06:53:33 
 ------------------------------------------------------------------------------*/
 using UnityEngine;
 namespace AlchemicalFlux.GridSystems
@@ -16,9 +16,12 @@ namespace AlchemicalFlux.GridSystems
         public enum RotationStateValue { Base, HexTop, HexSide };
         public RotationStateValue RotationState;
 
-        private RhombicGridConverter _baseAlignment = new(RhombicGridConfig.BaseAlignment);
-        private RhombicGridConverter _hexTopAlignment = new(RhombicGridConfig.TopAlignment);
-        private RhombicGridConverter _hexSideAlignment = new(RhombicGridConfig.SideAlignment);
+        private RhombicGridConverter _baseAlignment = 
+            new(RhombicGridPresets.BaseAlignment, RhombicGridPresets.UnitScale);
+        private RhombicGridConverter _hexTopAlignment = 
+            new(RhombicGridPresets.TopAlignment, RhombicGridPresets.UnitScale);
+        private RhombicGridConverter _hexSideAlignment = 
+            new(RhombicGridPresets.SideAlignment, RhombicGridPresets.UnitScale);
 
         private void OnDrawGizmos()
         {

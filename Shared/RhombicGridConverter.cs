@@ -6,44 +6,71 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-03 09:16:05 
+  Last commit at: 2024-08-04 06:53:33 
 ------------------------------------------------------------------------------*/
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AlchemicalFlux.GridSystems
 {
     public class RhombicGridConverter
     {
-        public Vector3[] Verts = RhombicConstants.Verts;
-        public Vector3[] FaceCenters = RhombicConstants.FaceCenters;
-        public Vector3 X = RhombicConstants.X;
-        public Vector3 Y = RhombicConstants.Y;
-        public Vector3 Z = RhombicConstants.Z;
+        #region Members
 
-        public RhombicGridConverter(RhombicGridConfig config)
+        public Vector3[] Verts, FaceCenters;
+        public readonly Vector3 X, Y, Z;
+
+        #endregion Members
+
+        #region Methods
+
+        #region Constructors
+
+        public RhombicGridConverter(RhombicGridConfig config) : 
+            this(config, Vector3.one) {}
+
+        public RhombicGridConverter(RhombicGridConfig config, float scale) : 
+            this(config, new Vector3(scale, scale, scale)) { }
+
+        public RhombicGridConverter(RhombicGridConfig config, Vector3 scale)
         {
-            Verts = RotateArray(RhombicConstants.Verts, config.Rotation);
-            FaceCenters = RotateArray(RhombicConstants.FaceCenters, config.Rotation);
-            X = config.Rotation * RhombicConstants.FaceCenters[config.XVectorIndex];
-            Y = config.Rotation * RhombicConstants.FaceCenters[config.YVectorIndex];
-            Z = config.Rotation * RhombicConstants.FaceCenters[config.ZVectorIndex];
+            Verts = RhombicConstants.Verts.ToArray();
+            FaceCenters = RhombicConstants.FaceCenters.ToArray();
+            Transform(Verts, config.Rotation, scale);
+            Transform(FaceCenters, config.Rotation, scale);
+
+            X = 2f * RhombicConstants.FaceCenters[config.XVectorIndex];
+            Y = 2f * RhombicConstants.FaceCenters[config.YVectorIndex];
+            Z = 2f * RhombicConstants.FaceCenters[config.ZVectorIndex];
+            Transform(ref X, config.Rotation, scale);
+            Transform(ref Y, config.Rotation, scale);
+            Transform(ref Z, config.Rotation, scale);
         }
 
-        public Vector3 GridToWorldSpace(int x, int y, int z) { return new(); }
+        #endregion Constructors
 
-        public (int x, int y, int z) WorldToGrid(Vector3 vec) { return (0, 0, 0); }
+        //public Vector3 GridToWorldSpace(int x, int y, int z) { return new(); }
 
-        // Method to apply rotation to a Vector3 array
-        protected static Vector3[] RotateArray(Vector3[] originalArray, Quaternion rotation)
+        //public (int x, int y, int z) WorldToGrid(Vector3 vec) { return (0, 0, 0); }
+
+        #region Helpers
+
+        private void Transform(Vector3[] array, Quaternion rotation, Vector3 scale)
         {
-            Vector3[] rotatedArray = new Vector3[originalArray.Length];
-            for(int index = 0; index < originalArray.Length; ++index)
+            for(var index = 0; index < array.Length; ++index)
             {
-                rotatedArray[index] = rotation * originalArray[index];
+                Transform(ref array[index], rotation, scale);
             }
-            return rotatedArray;
         }
 
+        private void Transform(ref Vector3 vector, Quaternion rotation, Vector3 scale)
+        {
+            vector = Vector3.Scale(scale, vector);
+            vector = rotation * vector;
+        }
+
+        #endregion Helpers
+
+        #endregion Methods
     }
 }

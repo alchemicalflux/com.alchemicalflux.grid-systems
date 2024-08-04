@@ -6,18 +6,25 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-03 09:16:05 
+  Last commit at: 2024-08-04 06:53:33 
 ------------------------------------------------------------------------------*/
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AlchemicalFlux.GridSystems
 {
     public class RhombicConstants
     {
+        #region Mathematical Constants
+
         public static readonly float ShortToLongDiagScale = Mathf.Sqrt(2);
         public static readonly float EdgeToLongDiagScale = Mathf.Sqrt(3);
 
-        public static readonly Vector3[] Verts =
+        #endregion Mathematical Constants
+
+        #region Spacial Constants
+
+        private static readonly Vector3[] _verts =
         {
             new(1, 1, -1), new(-1, -1, 1),
             new(1, 1, 1), new(1, -1, -1), new(-1, 1, -1),
@@ -27,26 +34,16 @@ namespace AlchemicalFlux.GridSystems
             new(0, 2, 0), new(0, -2, 0),
             new(0, 0, 2), new(0, 0, -2),
         };
+        public static readonly IReadOnlyList<Vector3> Verts = _verts;
 
-        public static readonly Vector3[] FaceCenters =
+        private static readonly Vector3[] _faceCenters =
         {
             new(1, 1, 0), new(1, -1, 0), new(-1, 1, 0), new(-1, -1, 0),
             new(1, 0, 1), new(1, 0, -1), new(-1, 0, 1), new(-1, 0, -1),
             new(0, 1, 1), new(0, 1, -1), new(0, -1, 1), new(0, -1, -1)
         };
+        public static readonly IReadOnlyList<Vector3> FaceCenters = _faceCenters;
 
-        // Traversals
-        public static readonly Vector3 X = new(2, 0, 2);
-        public static readonly Vector3 Y = new(0, 2, 2);
-        public static readonly Vector3 Z = new(-2, 0, 2);
-
-        // Define the rotation quaternion
-        private static readonly float LargeAngle = 2 * Mathf.Atan(Mathf.Sqrt(2));
-        private static readonly float LargeDegrees = LargeAngle * Mathf.Rad2Deg;
-        private static readonly float HexAngle = LargeDegrees / 2f;
-
-        public static readonly Quaternion HexRotation = Quaternion.AngleAxis(HexAngle, new Vector3(1, 0, 1));
-        public static readonly Quaternion TopAlign = Quaternion.AngleAxis(15, new Vector3(0, 1, 0)) * HexRotation;
-        public static readonly Quaternion SideAlign = Quaternion.AngleAxis(45, new Vector3(0, 1, 0)) * HexRotation;
+        #endregion Spacial Constants
     }
 }
