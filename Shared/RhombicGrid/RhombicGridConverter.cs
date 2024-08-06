@@ -6,7 +6,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-04 07:58:46 
+  Last commit at: 2024-08-05 23:10:02 
 ------------------------------------------------------------------------------*/
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,7 +44,15 @@ namespace AlchemicalFlux.GridSystems
 
         #endregion Constructors
 
-        //public Vector3 GridToWorldSpace(int x, int y, int z) { return new(); }
+        public Vector3 CellPosition(Transform transform, int x, int y, int z) 
+        { 
+            return transform.TransformPoint(CellOffset(x, y, z));
+        }
+
+        public Vector3 CellOffset(int x, int y, int z)
+        {
+            return x * X + y * Y + z * Z;
+        }
 
         //public (int x, int y, int z) WorldToGrid(Vector3 vec) { return (0, 0, 0); }
 

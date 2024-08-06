@@ -6,7 +6,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-04 06:53:33 
+  Last commit at: 2024-08-05 23:10:02 
 ------------------------------------------------------------------------------*/
 using UnityEngine;
 
@@ -44,7 +44,7 @@ namespace AlchemicalFlux.GridSystems
         public static readonly RhombicGridConfig SideAlignment =
             new RhombicGridConfig(SideAlign, 4, 0, 8);
 
-        public static readonly float UnitScale = 1f / Mathf.Sqrt(2);
+        public static readonly float UnitScale = 0.5f / Mathf.Sqrt(2);
 
         #endregion Grid Configurations
     }
