@@ -6,7 +6,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-05 23:10:02 
+  Last commit at: 2024-08-07 21:46:15 
 ------------------------------------------------------------------------------*/
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,20 +39,33 @@ namespace AlchemicalFlux.GridSystems
             new(RhombicGridPresets.SideAlignment, RhombicGridPresets.UnitScale);
 
         private RhombicGridConverter _currentConverter;
+        private RhombicGridChunkConfig _chunkConfig;
+
+        public int _xSize = 10, _ySize = 3, _zSize = 10;
 
         public RhombicGridRenderer()
         {
             _currentConverter = _baseAlignment;
+            _chunkConfig = new(_currentConverter, _xSize, _ySize, _zSize);
         }
 
         private void OnDrawGizmos()
         {
             if(_renderUnitAtOrigin) { DrawUnitAtOrigin(_currentConverter); }
+            DrawChunkCenters();
         }
 
         private void OnValidate()
         {
             UpdateRotationConfig();
+        }
+
+        private void DrawChunkCenters()
+        {
+            foreach(var point in _chunkConfig.Positions)
+            {
+                Gizmos.DrawSphere(transform.TransformPoint(point), .05f);
+            }
         }
 
         private void DrawUnitAtOrigin(RhombicGridConverter converter)
@@ -115,6 +128,7 @@ namespace AlchemicalFlux.GridSystems
                 case RotationStateValue.HexTop: _currentConverter = _hexTopAlignment; break;
                 case RotationStateValue.HexSide: _currentConverter = _hexSideAlignment; break;
             }
+            _chunkConfig = new(_currentConverter, _xSize, _ySize, _zSize);
         }
     }
 }
