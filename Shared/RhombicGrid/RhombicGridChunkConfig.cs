@@ -5,7 +5,7 @@
   Copyright:      ©2024 AlchemicalFlux. All rights reserved.
 
   Last commit by: alchemicalflux 
-  Last commit at: 2024-08-07 21:46:15 
+  Last commit at: 2024-08-07 23:20:30 
 ------------------------------------------------------------------------------*/
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -40,6 +40,7 @@ namespace AlchemicalFlux.GridSystems
             _zSize = zSize;
             GeneratePositions();
         }
+        // x, y, z, -x, -y, -z, -x+y, -x+z, -y+x, -y+z, -z+x, -z+y
 
         #endregion Constructors
 
@@ -49,20 +50,31 @@ namespace AlchemicalFlux.GridSystems
             var xzSize = _xSize * _zSize;
 
             Parallel.For(0, _ySize, y =>
+            {
+                var yshift = YShift(y);
+                var yOffset = y * xzSize;
+                Parallel.For(0, _zSize, z =>
                 {
-                    var yOffset = y * xzSize;
-                    for(var z = 0; z < _zSize; ++z)
+                    var offset = z * _xSize + yOffset;
+                    var shift = ZShift(z) + yshift;
+                    Parallel.For(0, _xSize, x =>
                     {
-                        var offset = z * _xSize + yOffset;
-                        for(var x = 0; x < _xSize; ++x)
-                        {
-                            _positions[offset + x] = _converter.X * x + _converter.Y * y + _converter.Z * z;
-                        }
-                    }
-                }
-            );
+                        _positions[offset + x] = shift + 
+                            _converter.X * x + _converter.Y * y + _converter.Z * z;
+                    });
+                });
+            });
         }
-        // x, y, z, -x, -y, -z, -x+y, -x+z, -y+x, -y+z, -z+x, -z+y
+
+        public Vector3 YShift(int y) 
+        { 
+            return (y / 3) * -_converter.Z + (++y / 3) * -_converter.X; 
+        }
+
+        public Vector3 ZShift(int z) 
+        {
+            return (z / 2) * -_converter.X; 
+        }
 
         #endregion Methods
     }
